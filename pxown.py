@@ -16,13 +16,19 @@ def worker(IP, commands, lock):
             break
         except Exception, e:
             tries += 1
-            sleep(1)
+            sleep(.5)
             print("Error {}: {}".format(IP, e))
     print("Connected to {}".format(IP))
+    output = []
     for i in commands:
         p.sendline(i)
         p.prompt()
-        print("{}:\n{}".format(IP, p.before))
+        output.append(p.before)
+    print("{}:\n".format(IP))
+    lock.acquire()
+    for o in output:
+        print(o)
+    lock.release()
 
 def main():
     parser = argparse.ArgumentParser()
@@ -54,7 +60,6 @@ def main():
         t = Thread(target=worker, args=(target, commands, lock))
         t.start()
         threads.append(t)
-        #sleep(.25)
     for t in threads:
         t.join()
 
