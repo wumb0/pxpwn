@@ -2,7 +2,7 @@ import sys
 import argparse
 import pxssh
 from threading import Thread, Lock
-from time import sleep
+from time import sleep,strftime
 
 quiet=False
 outfile=""
@@ -13,7 +13,6 @@ def worker(IP, commands, un, pw, lock):
     global quiet
     for tries in range(0,1):
         try:
-            print tries
             p = pxssh.pxssh()
             p.login(IP, un, pw, login_timeout=3)
             break
@@ -41,15 +40,20 @@ def worker(IP, commands, un, pw, lock):
     p.logout()
     if (diff):
         with open(IP + ".out", "a+") as file:
+            file.write(strftime("%c"))
+            file.write('\n')
             for o in output:
-                file.write(o.rstrip('\n'))
+                file.write(o.replace(chr(13), ""))
+                file.write('\n')
     else:
         lock.acquire()
         if outfile:
             with open(outfile, "a+") as file:
-                file.write("{}:\n".format(IP))
+                file.write("{} {}:\n".format(IP, strftime("%c")))
+                file.write('\n')
                 for o in output:
-                    file.write(o.rstrip('\r'))
+                    file.write(o.replace(chr(13), ""))
+                    file.write('\n')
         else:
             print("{}:\n".format(IP))
             for o in output:
