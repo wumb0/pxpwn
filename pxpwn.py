@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 import sys
 import argparse
 import pxssh
@@ -69,7 +70,7 @@ def main():
     parser.add_argument('-p', help='The password to log in with', action='store', dest='passwd', default='changeme')
     parser.add_argument('-o', help='The output file, defaults to stdout', action='store', dest='outfile' )
     parser.add_argument('-q', help='do not produce command output', action='store_true', dest='quiet')
-    parser.add_argument('-d', help="different files for each IP... negates -o option,", action='store_true', dest='diff')
+    parser.add_argument('-d', help="different files for each IP... negates -o option", action='store_true', dest='diff')
     args = parser.parse_args()
 
     global outfile
