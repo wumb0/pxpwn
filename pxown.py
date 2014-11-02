@@ -19,15 +19,15 @@ def worker(IP, commands, un, pw, lock):
         except Exception, e:
             err = str(e).split('\n')[0]
             if "password".upper() in err.upper():
-                print("Error {}: {}".format(IP, err))
+                if not quiet: print("Error {}: {}".format(IP, err))
                 return -1
             if "could not set shell prompt".upper() in err.upper() or "EOF" in err.upper():
-                print("Error {}: {}".format(IP, "Connection Refused"))
+                if not quiet: print("Error {}: {}".format(IP, "Connection Refused"))
                 if (tries == 2):
                     return -1
             sleep(.5)
             if tries == 2:
-                print("Error {}: {}".format(IP, err))
+                if not quiet: print("Error {}: {}".format(IP, err))
                 return -1
     if not p.isalive(): return -1
     print("Connected to {}".format(IP))
@@ -38,6 +38,7 @@ def worker(IP, commands, un, pw, lock):
         p.prompt()
         output.append(p.before)
     p.logout()
+    if quiet: return 0
     if (diff):
         with open(IP + ".out", "a+") as file:
             file.write(strftime("%c"))
