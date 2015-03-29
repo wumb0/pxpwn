@@ -28,11 +28,13 @@ def worker(IP, commands, un, pw, lock, quiet, outfile, diff):
     print("Connected to {}".format(IP))
     output = []
     for i in commands: #send each command
-        if not p.isalive(): return -1
+        if not p.isalive(): break
         p.sendline(i)
         p.prompt()
         output.append(p.before)
-    p.logout()
+    try:
+        p.logout()
+    except: pass
     if quiet: return 0
     if (diff): #write to different files
         with open(IP + ".out", "a+") as file:
